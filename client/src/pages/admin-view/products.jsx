@@ -27,6 +27,7 @@ export default function AdminProducts() {
 
   const [imageFile, setImageFile] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [imageLoading, setImageLoading] = useState(false);
 
   function onSubmit(e) {
     e.preventDefault();
@@ -79,6 +80,8 @@ export default function AdminProducts() {
               setFile={setImageFile}
               url={imageUrl}
               setUrl={setImageUrl}
+              setImageLoading={setImageLoading}
+              imageLoading={imageLoading}
             />
 
             {/* Form section */}
