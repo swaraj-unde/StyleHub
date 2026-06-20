@@ -9,7 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
-import { fetchAllFilteredProducts } from "@/store/shop/product-slice";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+} from "@/store/shop/product-slice";
 import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,14 +21,19 @@ import { useSearchParams } from "react-router-dom";
 export default function ShopListing() {
   const [sort, setSort] = useState(null);
   const [filters, setFilters] = useState({});
-  const { productList } = useSelector((state) => state.shopProduct);
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProduct,
+  );
   const [searchParams, setSearchParams] = useSearchParams();
+
+  console.log(productDetails);
 
   const dispatch = useDispatch();
   useEffect(() => {
-    if(filters!==null && sort!==null)
-    {
-      dispatch(fetchAllFilteredProducts({filterParams:filters,sortParams:sort}));
+    if (filters !== null && sort !== null) {
+      dispatch(
+        fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }),
+      );
     }
   }, [dispatch, sort, filters]);
 
@@ -78,6 +86,11 @@ export default function ShopListing() {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
   }, []);
+
+  function handelGetProduct(getId) {
+    dispatch(fetchProductDetails(getId));
+    console.log(getId);
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -138,7 +151,11 @@ export default function ShopListing() {
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
               {productList?.length > 0 ? (
                 productList.map((item) => (
-                  <ShoppingProductTile key={item._id} product={item} />
+                  <ShoppingProductTile
+                    key={item._id}
+                    product={item}
+                    handelGetProduct={handelGetProduct}
+                  />
                 ))
               ) : (
                 <div className="col-span-full flex h-64 items-center justify-center rounded-xl border border-dashed border-zinc-800 bg-zinc-900">

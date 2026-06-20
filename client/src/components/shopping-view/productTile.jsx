@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 
-export default function ShoppingProductTile({ product }) {
+export default function ShoppingProductTile({ product, handelGetProduct }) {
   const discounted =
     product?.salePrice > 0 && product?.salePrice < product?.price;
 
@@ -11,8 +11,10 @@ export default function ShoppingProductTile({ product }) {
   const stock = product?.totalStock || 0;
 
   return (
-    <div className="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition-all duration-300 hover:border-zinc-700 hover:shadow-lg hover:shadow-black/30">
-
+    <div
+      onClick={() => handelGetProduct(product._id)}
+      className="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition-all duration-300 hover:border-zinc-700 hover:shadow-lg hover:shadow-black/30"
+    >
       <div className="relative h-52 overflow-hidden bg-black">
         <img
           src={product?.image}
@@ -20,13 +22,11 @@ export default function ShoppingProductTile({ product }) {
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
-
         {discounted && (
           <span className="absolute left-2 top-2 rounded-md bg-green-500 px-2 py-1 text-xs font-semibold text-white">
             {discountPercentage}% OFF
           </span>
         )}
-
 
         <span
           className={`absolute right-2 top-2 rounded-md px-2 py-1 text-xs font-medium ${
@@ -47,7 +47,6 @@ export default function ShoppingProductTile({ product }) {
         </span>
       </div>
 
-
       <div className="p-4">
         <h3 className="truncate text-base font-semibold text-white">
           {product?.title}
@@ -60,7 +59,6 @@ export default function ShoppingProductTile({ product }) {
 
           <span className="text-xs text-zinc-500">{product?.brand}</span>
         </div>
-
 
         <div className="mt-3 flex items-center gap-2">
           <span className="text-xl font-bold text-white">
@@ -80,7 +78,6 @@ export default function ShoppingProductTile({ product }) {
           )}
         </div>
       </div>
-
 
       <div className="border-t border-zinc-800 p-3">
         <Button
