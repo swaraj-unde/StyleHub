@@ -2,7 +2,7 @@ import { filterOptions } from "@/config";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 
-export default function ProductFilter() {
+export default function ProductFilter({ filters, handleFilter }) {
   return (
     <div className="w-full rounded-xl border border-zinc-800 bg-zinc-900 p-5">
       <div className="mb-5 border-b border-zinc-800 pb-3">
@@ -22,7 +22,17 @@ export default function ProductFilter() {
                   key={option.id}
                   className="flex cursor-pointer items-center gap-3 text-sm text-zinc-300 hover:text-white"
                 >
-                  <Checkbox />
+                  <Checkbox
+                    checked={
+                      filters &&
+                      Object.keys(filters).length > 0 &&
+                      filters[item] &&
+                      filters[item].indexOf(option.id) > -1
+                    }
+                    onCheckedChange={() => {
+                      handleFilter(item, option.id);
+                    }}
+                  />
 
                   <span>{option.label}</span>
                 </Label>

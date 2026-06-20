@@ -1,4 +1,5 @@
 import ProductFilter from "@/components/shopping-view/filter";
+import ShoppingProductTile from "@/components/shopping-view/productTile";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,27 +13,82 @@ import { fetchAllFilteredProducts } from "@/store/shop/product-slice";
 import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 
 export default function ShopListing() {
-  const [sort, setSort] = useState();
-
+  const [sort, setSort] = useState(null);
+  const [filters, setFilters] = useState({});
   const { productList } = useSelector((state) => state.shopProduct);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchAllFilteredProducts());
-  }, [dispatch]);
+    if(filters!==null && sort!==null)
+    {
+      dispatch(fetchAllFilteredProducts({filterParams:filters,sortParams:sort}));
+    }
+  }, [dispatch, sort, filters]);
+
+  function createSearchParamsHelper(filterParams) {
+    const queryParams = [];
+    for (const [key, value] of Object.entries(filterParams)) {
+      if (Array.isArray(value) && value.length > 0) {
+        const paramValue = value.join(",");
+        queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
+      }
+    }
+    return queryParams.join("&");
+  }
+
+  useEffect(() => {
+    if (filters && Object.keys(filters).length > 0) {
+      const creatQueryString = createSearchParamsHelper(filters);
+      setSearchParams(new URLSearchParams(creatQueryString));
+    }
+  }, [filters]);
+
+  function handleSort(value) {
+    setSort(value);
+  }
+
+  function handleFilter(sectionId, option) {
+    const copyFilters = { ...filters };
+
+    if (!copyFilters[sectionId]) {
+      copyFilters[sectionId] = [option];
+    } else {
+      const index = copyFilters[sectionId].indexOf(option);
+
+      if (index === -1) {
+        copyFilters[sectionId].push(option);
+      } else {
+        copyFilters[sectionId].splice(index, 1);
+
+        if (copyFilters[sectionId].length === 0) {
+          delete copyFilters[sectionId];
+        }
+      }
+    }
+
+    setFilters(copyFilters);
+    sessionStorage.setItem("filters", JSON.stringify(copyFilters));
+  }
+
+  useEffect(() => {
+    setSort("price-lowtohigh");
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
           <div className="lg:hidden">
-            <ProductFilter />
+            <ProductFilter filters={filters} handleFilter={handleFilter} />
           </div>
 
           <aside className="hidden lg:block">
-            <ProductFilter />
+            <ProductFilter filters={filters} handleFilter={handleFilter} />
           </aside>
 
           <main className="space-y-4">
@@ -41,7 +97,9 @@ export default function ShopListing() {
                 <h1 className="text-xl font-semibold text-white">
                   All Products
                 </h1>
-                <p className="text-sm text-zinc-400">0 products found</p>
+                <p className="text-sm text-zinc-400">
+                  {productList.length} products found
+                </p>
               </div>
 
               <DropdownMenu>
@@ -59,7 +117,10 @@ export default function ShopListing() {
                   align="end"
                   className="w-64 border-zinc-800 bg-zinc-900 text-white"
                 >
-                  <DropdownMenuRadioGroup value={sort} onValueChange={setSort}>
+                  <DropdownMenuRadioGroup
+                    value={sort}
+                    onValueChange={handleSort}
+                  >
                     {sortOptions.map((item) => (
                       <DropdownMenuRadioItem
                         key={item.id}
@@ -75,9 +136,15 @@ export default function ShopListing() {
             </div>
 
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
-              <div className="col-span-full flex h-64 items-center justify-center rounded-xl border border-dashed border-zinc-800 bg-zinc-900">
-                <p className="text-zinc-500">Products will appear here</p>
-              </div>
+              {productList?.length > 0 ? (
+                productList.map((item) => (
+                  <ShoppingProductTile key={item._id} product={item} />
+                ))
+              ) : (
+                <div className="col-span-full flex h-64 items-center justify-center rounded-xl border border-dashed border-zinc-800 bg-zinc-900">
+                  <p className="text-zinc-500">No products found</p>
+                </div>
+              )}
             </div>
           </main>
         </div>

@@ -79,22 +79,9 @@ export default function ShoppingProductTile({ product }) {
             </>
           )}
         </div>
-
-
-        {stock > 0 && stock <= 5 && (
-          <p className="mt-2 text-xs font-medium text-red-400">
-            ⚠ Only {stock} items remaining
-          </p>
-        )}
-
-        {stock > 5 && stock <= 20 && (
-          <p className="mt-2 text-xs font-medium text-orange-400">
-            Only {stock} items remaining
-          </p>
-        )}
       </div>
 
-      
+
       <div className="border-t border-zinc-800 p-3">
         <Button
           disabled={stock === 0}
