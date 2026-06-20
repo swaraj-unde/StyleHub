@@ -50,6 +50,7 @@ const addProduct = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Product added Successfully",
+      data: product,
     });
   } catch (error) {
     return res.status(500).json({
@@ -143,7 +144,6 @@ const deleteProduct = async (req, res) => {
       message: "Product deleted successfully",
       data: product,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
