@@ -10,6 +10,7 @@ import cors from "cors";
 import authRouter from "./routes/auth/auth.routes.js";
 import adminProductRouter from "./routes/admin/product.routes.js";
 import shopProductRouter from "./routes/shop/product.routes.js";
+import shopCartRouter from "./routes/shop/cart.routes.js";
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -43,6 +44,7 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductRouter);
 app.use("/api/shop/products", shopProductRouter);
+app.use("/api/shop/cart", shopCartRouter);
 
 const PORT = process.env.PORT || 3000;
 
