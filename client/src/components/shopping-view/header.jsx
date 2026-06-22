@@ -23,7 +23,6 @@ function MenuItems() {
   const navigate = useNavigate();
 
   function handleNavigateToPage(menuItem) {
-    console.log(menuItem);
 
     if (menuItem.id === "home" || menuItem.id === "products") {
       sessionStorage.removeItem("filters");
