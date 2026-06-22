@@ -35,6 +35,7 @@ function MenuItems() {
         }),
       );
     }
+    window.dispatchEvent(new Event("filtersChanged"));
 
     navigate(menuItem.path);
   }

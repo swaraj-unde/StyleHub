@@ -94,6 +94,17 @@ export default function ShopListing() {
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
   }, []);
 
+  useEffect(() => {
+    const updateFilters = () => {
+      const saved = sessionStorage.getItem("filters");
+      setFilters(saved ? JSON.parse(saved) : {});
+    };
+
+    window.addEventListener("filtersChanged", updateFilters);
+
+    return () => window.removeEventListener("filtersChanged", updateFilters);
+  }, []);
+
   function handelGetProduct(getId) {
     dispatch(fetchProductDetails(getId));
   }
