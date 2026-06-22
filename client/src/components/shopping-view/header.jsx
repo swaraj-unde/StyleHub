@@ -15,6 +15,9 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logoutUser } from "@/store/auth-slice";
 import { toast } from "sonner";
+import { UserCartWrapper } from "./cart-wrapper";
+import { useEffect, useState } from "react";
+import { fetchCartItems } from "@/store/shop/cart-slice";
 
 function MenuItems() {
   return (
@@ -37,6 +40,9 @@ function HeaderRightContent() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [openCart, setOpenCart] = useState(false);
+  const { cartItems } = useSelector((state) => state.shopCart);
+
   function handleLogout() {
     dispatch(logoutUser()).then((data) => {
       if (data?.payload?.success) {
@@ -45,18 +51,32 @@ function HeaderRightContent() {
     });
   }
 
+  useEffect(() => {
+    dispatch(fetchCartItems({ userId: user?.id }));
+  }, [dispatch]);
+
   return (
     <div className="flex items-center gap-3">
       {/* Cart */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-10 w-10 rounded-full border border-zinc-800 bg-zinc-900 text-white hover:bg-zinc-800"
-      >
-        <ShoppingCart className="h-5 w-5" />
-      </Button>
+      <Sheet open={openCart} onOpenChange={() => setOpenCart(false)}>
+        <Button
+          onClick={() => setOpenCart(true)}
+          variant="ghost"
+          size="icon"
+          className="h-10 w-10 rounded-full border border-zinc-800 bg-zinc-900 text-white hover:bg-zinc-800"
+        >
+          <ShoppingCart className="h-5 w-5" />
+        </Button>
+        <UserCartWrapper
+          cartItems={
+            cartItems && cartItems.items && cartItems.items.length > 0
+              ? cartItems.items
+              : []
+          }
+        ></UserCartWrapper>
+      </Sheet>
 
-      {/* Profile Dropdown */}
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="h-10 w-10 cursor-pointer border border-zinc-700">
@@ -103,7 +123,7 @@ export default function ShopHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
       <div className="mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
-        {/* Logo */}
+        
         <Link to="/shop/home" className="flex items-center gap-3 text-white">
           <div className="rounded-lg bg-zinc-800 p-2">
             <HousePlug className="h-5 w-5" />
@@ -112,7 +132,7 @@ export default function ShopHeader() {
           <span className="text-lg font-bold tracking-tight">Ecommerce</span>
         </Link>
 
-        {/* Desktop Nav */}
+
         <div className="hidden lg:flex items-center gap-10">
           <MenuItems />
 
@@ -128,7 +148,7 @@ export default function ShopHeader() {
           )}
         </div>
 
-        {/* Mobile Menu */}
+
         <Sheet>
           <SheetTrigger asChild>
             <Button

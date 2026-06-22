@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "../ui/dialog";
 
-export function ProductDetailBox({ open, setOpen, product }) {
+export function ProductDetailBox({ open, setOpen, product, handleAddToCart }) {
   if (!product) return null;
 
   const isOnSale =
@@ -26,7 +26,6 @@ export function ProductDetailBox({ open, setOpen, product }) {
         "
       >
         <div className="flex flex-col md:flex-row">
-          {/* IMAGE */}
           <div
             className="
             relative bg-black
@@ -61,7 +60,6 @@ export function ProductDetailBox({ open, setOpen, product }) {
             </span>
           </div>
 
-          {/* DETAILS */}
           <div className="p-5 space-y-4 w-full md:w-1/2">
             <div>
               <h2 className="text-xl md:text-2xl font-bold">{product.title}</h2>
@@ -70,7 +68,6 @@ export function ProductDetailBox({ open, setOpen, product }) {
               </p>
             </div>
 
-            {/* PRICE */}
             <div className="flex items-center gap-3">
               <span className="text-2xl font-bold">
                 ₹{isOnSale ? product.salePrice : product.price}
@@ -88,7 +85,6 @@ export function ProductDetailBox({ open, setOpen, product }) {
               )}
             </div>
 
-            {/* DESCRIPTION */}
             <div>
               <h3 className="text-sm font-semibold text-zinc-300">
                 Description
@@ -98,7 +94,6 @@ export function ProductDetailBox({ open, setOpen, product }) {
               </p>
             </div>
 
-            {/* META */}
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="rounded bg-zinc-900 p-3">
                 <p className="text-zinc-500">Category</p>
@@ -125,9 +120,9 @@ export function ProductDetailBox({ open, setOpen, product }) {
               </div>
             </div>
 
-            {/* ACTION */}
             <button
               disabled={stock === 0}
+              onClick={()=>handleAddToCart(product._id)}
               className="w-full rounded bg-white py-2 font-medium text-black hover:bg-zinc-200 disabled:bg-zinc-700 disabled:text-zinc-400"
             >
               {stock > 0 ? "Add to Cart" : "Out of Stock"}

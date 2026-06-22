@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
@@ -18,6 +19,7 @@ import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function ShopListing() {
   const [sort, setSort] = useState(null);
@@ -27,8 +29,8 @@ export default function ShopListing() {
   );
   const [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
-
-  console.log(productDetails);
+  const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -96,6 +98,22 @@ export default function ShopListing() {
     dispatch(fetchProductDetails(getId));
   }
 
+  function handleAddToCart(currProductId) {
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: currProductId,
+        quantity: 1,
+      }),
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems({ userId: user?.id }));
+        toast.success(data.payload.message);
+      } else {
+        toast.error("Failed to add product");
+      }
+    });
+  }
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-7xl px-4 py-6">
@@ -159,6 +177,7 @@ export default function ShopListing() {
                     key={item._id}
                     product={item}
                     handelGetProduct={handelGetProduct}
+                    handleAddToCart={handleAddToCart}
                   />
                 ))
               ) : (
@@ -171,6 +190,7 @@ export default function ShopListing() {
         </div>
       </div>
       <ProductDetailBox
+        handleAddToCart={handleAddToCart}
         open={open}
         setOpen={setOpen}
         product={productDetails}
