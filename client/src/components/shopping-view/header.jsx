@@ -23,7 +23,6 @@ function MenuItems() {
   const navigate = useNavigate();
 
   function handleNavigateToPage(menuItem) {
-
     if (menuItem.id === "home" || menuItem.id === "products") {
       sessionStorage.removeItem("filters");
     } else {
@@ -87,6 +86,7 @@ function HeaderRightContent() {
           <ShoppingCart className="h-5 w-5" />
         </Button>
         <UserCartWrapper
+          setOpenCart={setOpenCart}
           cartItems={
             cartItems && cartItems.items && cartItems.items.length > 0
               ? cartItems.items

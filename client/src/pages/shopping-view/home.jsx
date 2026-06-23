@@ -3,25 +3,24 @@ import bannerOne from "../../assets/banner-1.webp";
 import bannerTwo from "../../assets/banner-2.webp";
 import bannerThree from "../../assets/banner-3.webp";
 
-
 import {
-  Airplay,
-  BabyIcon,
+  Shirt,
+  Trophy,
+  Medal,
+  Flame,
+  Gem,
+  Sparkles,
+  Crown,
+  PersonStanding,
+  Baby,
+  Watch,
+  Footprints,
   ChevronLeftIcon,
   ChevronRightIcon,
-  CloudLightning,
-  Heater,
-  Images,
-  Shirt,
-  ShirtIcon,
-  ShoppingBasket,
-  UmbrellaIcon,
-  WashingMachine,
-  WatchIcon,
 } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ShoppingProductTile from "@/components/shopping-view/productTile";
 import { useNavigate } from "react-router-dom";
@@ -36,20 +35,20 @@ import { toast } from "sonner";
 const featureImageList = [bannerOne, bannerTwo, bannerThree];
 
 const categoriesWithIcon = [
-  { id: "men", label: "Men", icon: ShirtIcon },
-  { id: "women", label: "Women", icon: CloudLightning },
-  { id: "kids", label: "Kids", icon: BabyIcon },
-  { id: "accessories", label: "Accessories", icon: WatchIcon },
-  { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+  { id: "men", label: "Men", icon: Shirt },
+  { id: "women", label: "Women", icon: PersonStanding },
+  { id: "kids", label: "Kids", icon: Baby },
+  { id: "accessories", label: "Accessories", icon: Watch },
+  { id: "footwear", label: "Footwear", icon: Footprints },
 ];
 
 const brandsWithIcon = [
-  { id: "nike", label: "Nike", icon: Shirt },
-  { id: "adidas", label: "Adidas", icon: WashingMachine },
-  { id: "puma", label: "Puma", icon: ShoppingBasket },
-  { id: "levi", label: "Levi's", icon: Airplay },
-  { id: "zara", label: "Zara", icon: Images },
-  { id: "h&m", label: "H&M", icon: Heater },
+  { id: "nike", label: "Nike", icon: Trophy },
+  { id: "adidas", label: "Adidas", icon: Medal },
+  { id: "puma", label: "Puma", icon: Flame },
+  { id: "levi", label: "Levi's", icon: Gem },
+  { id: "zara", label: "Zara", icon: Sparkles },
+  { id: "h&m", label: "H&M", icon: Crown },
 ];
 
 function ShoppingHome() {
@@ -64,6 +63,10 @@ function ShoppingHome() {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProduct,
   );
+
+  const randomProducts = useMemo(() => {
+    return [...(productList || [])].sort(() => Math.random() - 0.5).slice(0, 4);
+  }, [productList]);
 
   function handleNavigateToListingPage(item, section) {
     sessionStorage.removeItem("filters");
@@ -122,7 +125,6 @@ function ShoppingHome() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Hero Carousel */}
       <div className="relative h-[600px] w-full overflow-hidden border-b border-zinc-800">
         {featureImageList.map((slide, index) => (
           <img
@@ -161,7 +163,6 @@ function ShoppingHome() {
         </Button>
       </div>
 
-      {/* Categories */}
       <section className="border-b border-zinc-800 py-12">
         <div className="container mx-auto px-4">
           <h2 className="mb-8 text-center text-3xl font-bold">
@@ -187,7 +188,6 @@ function ShoppingHome() {
         </div>
       </section>
 
-      {/* Brands */}
       <section className="border-b border-zinc-800 py-12">
         <div className="container mx-auto px-4">
           <h2 className="mb-8 text-center text-3xl font-bold">Shop by Brand</h2>
@@ -209,7 +209,6 @@ function ShoppingHome() {
         </div>
       </section>
 
-      {/* Products */}
       <section className="py-12">
         <div className="container mx-auto px-4">
           <h2 className="mb-8 text-center text-3xl font-bold">
@@ -217,7 +216,7 @@ function ShoppingHome() {
           </h2>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {productList?.map((product) => (
+            {randomProducts.map((product) => (
               <ShoppingProductTile
                 key={product._id}
                 product={product}

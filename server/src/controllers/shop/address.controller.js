@@ -84,7 +84,7 @@ const editAddress = async (req, res) => {
       },
       formData,
       {
-        new: true,
+        returnDocument: "after",
         runValidators: true,
       },
     );
