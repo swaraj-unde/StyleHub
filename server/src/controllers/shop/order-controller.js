@@ -20,8 +20,8 @@ export const createOrder = async (req, res) => {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url: "http://localhost:5173/shop/paypal-return",
-        cancel_url: "http://localhost:5173/shop/paypal-cancel",
+        return_url: `${process.env.FRONTEND_URL}/shop/paypal-return`,
+        cancel_url: `${process.env.FRONTEND_URL}/shop/paypal-cancel`,
       },
       transactions: [
         {
@@ -123,7 +123,6 @@ const capturePayment = async (req, res) => {
       });
     }
 
-
     for (const item of order.cartItems) {
       const product = await Product.findById(item.productId);
 
@@ -142,7 +141,6 @@ const capturePayment = async (req, res) => {
       }
     }
 
-
     for (const item of order.cartItems) {
       const product = await Product.findById(item.productId);
 
@@ -151,7 +149,6 @@ const capturePayment = async (req, res) => {
       await product.save();
     }
 
-
     order.paymentStatus = "paid";
     order.orderStatus = "inProcess";
     order.paymentId = paymentId;
@@ -159,7 +156,6 @@ const capturePayment = async (req, res) => {
     order.orderUpdateDate = new Date();
 
     await order.save();
-
 
     await Cart.findByIdAndUpdate(order.cartId, {
       items: [],
@@ -178,5 +174,58 @@ const capturePayment = async (req, res) => {
   }
 };
 
+const getAllOrders = async (req, res) => {
+  try {
+    const { userId } = req.params;
 
-export { capturePayment };
+    const orders = await Order.find({ userId }).sort({
+      createdAt: -1,
+    });
+
+    if (!orders.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No orders found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Orders fetched successfully",
+      data: orders,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getOrderDetails = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Order fetched successfully",
+      data: order,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export { capturePayment, getAllOrders, getOrderDetails };

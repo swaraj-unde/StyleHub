@@ -9,7 +9,7 @@ const initialState = {
 export const addToCart = createAsyncThunk(
   "cart/addtoCart",
   async ({ userId, productId, quantity }) => {
-    const res = await axios.post(`http://localhost:3000/api/shop/cart/add`, {
+    const res = await axios.post(`${process.env.API_URL}/shop/cart/add`, {
       userId,
       productId,
       quantity,
@@ -21,7 +21,7 @@ export const fetchCartItems = createAsyncThunk(
   "cart/fetchCart",
   async ({ userId }) => {
     const res = await axios.get(
-      `http://localhost:3000/api/shop/cart/get/${userId}`,
+      `${process.env.API_URL}/shop/cart/get/${userId}`,
     );
     return res.data;
   },
@@ -30,7 +30,7 @@ export const deleteCartItem = createAsyncThunk(
   "cart/deleteItem",
   async ({ userId, productId }) => {
     const res = await axios.delete(
-      `http://localhost:3000/api/shop/cart/delete/${userId}/${productId}`,
+      `${process.env.API_URL}/shop/cart/delete/${userId}/${productId}`,
     );
     return res.data;
   },
@@ -38,7 +38,7 @@ export const deleteCartItem = createAsyncThunk(
 export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartItem",
   async ({ userId, productId, quantity }) => {
-    const res = await axios.put(`http://localhost:3000/api/shop/cart/update`, {
+    const res = await axios.put(`${process.env.API_URL}/shop/cart/update`, {
       userId,
       productId,
       quantity,

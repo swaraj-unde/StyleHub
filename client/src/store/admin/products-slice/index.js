@@ -10,7 +10,7 @@ export const addProduct = createAsyncThunk(
   "/products/add",
   async (formData) => {
     const res = await axios.post(
-      "http://localhost:3000/api/admin/products/add",
+      `${process.env.API_URL}/admin/products/add`,
       formData,
     );
     return res?.data;
@@ -18,7 +18,7 @@ export const addProduct = createAsyncThunk(
 );
 
 export const fetchAllProducts = createAsyncThunk("/products/get", async () => {
-  const res = await axios.get("http://localhost:3000/api/admin/products/get");
+  const res = await axios.get(`${process.env.API_URL}/admin/products/get`);
   return res?.data;
 });
 
@@ -26,7 +26,7 @@ export const editProduct = createAsyncThunk(
   "/products/edit",
   async ({ id, formData }) => {
     const res = await axios.put(
-      `http://localhost:3000/api/admin/products/edit/${id}`,
+      `${process.env.API_URL}/admin/products/edit/${id}`,
       formData,
     );
     return res?.data;
@@ -36,7 +36,7 @@ export const deleteProduct = createAsyncThunk(
   "/products/delete",
   async (id) => {
     const res = await axios.delete(
-      `http://localhost:3000/api/admin/products/delete/${id}`,
+      `${process.env.API_URL}/admin/products/delete/${id}`,
     );
     return res?.data;
   },

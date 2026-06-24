@@ -5,13 +5,15 @@ const initialState = {
   approvalURL: null,
   isLoading: false,
   orderId: null,
+  orderList: [],
+  orderDetails: null,
 };
 
 export const createNewOrder = createAsyncThunk(
   "/order/create",
   async (orderData) => {
     const res = await axios.post(
-      `http://localhost:3000/api/shop/order/create`,
+      `${process.env.API_URL}/shop/order/create`,
       orderData,
     );
     return res.data;
@@ -21,7 +23,7 @@ export const createNewOrder = createAsyncThunk(
 export const capturePayment = createAsyncThunk(
   "/order/capture",
   async ({ paymentId, payerId, orderId }) => {
-    const res = await axios.post("http://localhost:3000/api/shop/order/capture", {
+    const res = await axios.post(`${process.env.API_URL}/shop/order/capture`, {
       paymentId,
       orderId,
       payerId,
@@ -30,10 +32,30 @@ export const capturePayment = createAsyncThunk(
   },
 );
 
+export const getAllOrders = createAsyncThunk("/order/get", async (userId) => {
+  const res = await axios.get(
+    `${process.env.API_URL}/shop/order/list/${userId}`,
+  );
+  return res.data;
+});
+export const getOrderDetails = createAsyncThunk(
+  "/order/get/details",
+  async (orderId) => {
+    const res = await axios.get(
+      `${process.env.API_URL}/shop/order/details/${orderId}`,
+    );
+    return res.data;
+  },
+);
+
 const shoppingOrderSlice = createSlice({
   name: "shoppingOrderSlice",
   initialState,
-  reducers: {},
+  reducers: {
+    resetOrderDetails: (state) => {
+      state.orderDetails = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
 
@@ -53,8 +75,32 @@ const shoppingOrderSlice = createSlice({
         state.isLoading = false;
         state.approvalURL = null;
         state.orderId = null;
+      })
+      .addCase(getAllOrders.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllOrders.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.orderList = action.payload.data;
+      })
+      .addCase(getAllOrders.rejected, (state) => {
+        state.isLoading = false;
+        state.orderList = [];
+      })
+      .addCase(getOrderDetails.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getOrderDetails.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.orderDetails = action.payload.data;
+      })
+      .addCase(getOrderDetails.rejected, (state) => {
+        state.isLoading = false;
+        state.orderDetails = null;
       });
   },
 });
+
+export const { resetOrderDetails } = shoppingOrderSlice.actions;
 
 export default shoppingOrderSlice.reducer;

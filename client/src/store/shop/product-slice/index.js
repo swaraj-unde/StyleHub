@@ -15,7 +15,7 @@ export const fetchAllFilteredProducts = createAsyncThunk(
       sortBy: sortParams,
     });
     const res = await axios.get(
-      `http://localhost:3000/api/shop/products/get?${query}`,
+      `${process.env.API_URL}/shop/products/get?${query}`,
     );
     return res?.data;
   },
@@ -25,7 +25,7 @@ export const fetchProductDetails = createAsyncThunk(
   "/products/fetchProductDetails",
   async (id) => {
     const res = await axios.get(
-      `http://localhost:3000/api/shop/products/get/${id}`,
+      `${process.env.API_URL}/shop/products/get/${id}`,
     );
     return res?.data;
   },
