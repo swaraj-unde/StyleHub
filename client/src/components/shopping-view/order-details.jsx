@@ -1,42 +1,10 @@
-import { useState } from "react";
-import CommonForm from "../common/form";
-import { DialogContent } from "../ui/dialog";
+import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
 
 
-const demoOrder = {
-  _id: "ORD_123456789",
-  orderDate: "2026-06-23T10:15:00Z",
-  totalAmount: 7000,
-  paymentMethod: "Credit Card",
-  paymentStatus: "Paid",
-  orderStatus: "pending",
-
-  cartItems: [
-    { title: "Gaming Laptop", quantity: 1, price: 5000 },
-    { title: "Mechanical Keyboard", quantity: 2, price: 2000 },
-    { title: "Mouse", quantity: 1, price: 150 },
-  ],
-
-  addressInfo: {
-    address: "221B Baker Street",
-    city: "London",
-    pincode: "100001",
-    phone: "+1 9876543210",
-    notes: "Leave at door",
-  },
-};
-
-export default function ShoppingOrderDetailsView() {
-
-  const orderDetails = demoOrder;
-
-  function handleUpdateStatus(e) {
-    e.preventDefault();
-    console.log("Selected Status:", formData.status);
-  }
+export default function ShoppingOrderDetailsView({ orderDetails }) {
 
   return (
     <DialogContent
@@ -52,6 +20,7 @@ export default function ShoppingOrderDetailsView() {
         p-0
       "
     >
+      <DialogTitle className="sr-only">Order Details</DialogTitle>
       <div className="sticky top-0 z-10 bg-zinc-950 border-b border-zinc-800 px-6 py-4">
         <h2 className="text-xl font-semibold">Order Details</h2>
         <p className="text-sm text-zinc-400">
@@ -66,14 +35,14 @@ export default function ShoppingOrderDetailsView() {
 
             <div className="flex justify-between">
               <span className="text-zinc-400">Order ID</span>
-              <Label>{orderDetails._id}</Label>
+              <Label>{orderDetails?._id}</Label>
             </div>
 
             <Separator className="bg-zinc-800" />
 
             <div className="flex justify-between">
               <span className="text-zinc-400">Date</span>
-              <Label>{orderDetails.orderDate.split("T")[0]}</Label>
+              <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
             </div>
 
             <Separator className="bg-zinc-800" />
@@ -81,7 +50,7 @@ export default function ShoppingOrderDetailsView() {
             <div className="flex justify-between">
               <span className="text-zinc-400">Total</span>
               <Label className="text-green-400">
-                ${orderDetails.totalAmount}
+                ${orderDetails?.totalAmount}
               </Label>
             </div>
 
@@ -94,15 +63,15 @@ export default function ShoppingOrderDetailsView() {
                 className={`
                   px-3 py-1
                   ${
-                    orderDetails.orderStatus === "delivered"
+                    orderDetails?.orderStatus === "delivered"
                       ? "bg-green-500/15 text-green-400 border border-green-500/30"
-                      : orderDetails.orderStatus === "rejected"
+                      : orderDetails?.orderStatus === "rejected"
                         ? "bg-red-500/15 text-red-400 border border-red-500/30"
                         : "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30"
                   }
                 `}
               >
-                {orderDetails.orderStatus}
+                {orderDetails?.orderStatus}
               </Badge>
             </div>
           </div>
@@ -112,7 +81,7 @@ export default function ShoppingOrderDetailsView() {
 
             <div className="flex justify-between">
               <span className="text-zinc-400">Method</span>
-              <Label>{orderDetails.paymentMethod}</Label>
+              <Label>{orderDetails?.paymentMethod}</Label>
             </div>
 
             <Separator className="bg-zinc-800" />
@@ -120,7 +89,7 @@ export default function ShoppingOrderDetailsView() {
             <div className="flex justify-between">
               <span className="text-zinc-400">Payment</span>
               <Label className="text-green-400">
-                {orderDetails.paymentStatus}
+                {orderDetails?.paymentStatus}
               </Label>
             </div>
 
@@ -137,17 +106,17 @@ export default function ShoppingOrderDetailsView() {
           <h3 className="text-lg font-semibold mb-4">Ordered Items</h3>
 
           <div className="space-y-3">
-            {orderDetails.cartItems.map((item, i) => (
+            {orderDetails?.cartItems?.map((item, i) => (
               <div
                 key={i}
                 className="flex justify-between items-center bg-zinc-800 p-4 rounded-lg"
               >
                 <div>
-                  <p className="font-medium">{item.title}</p>
-                  <p className="text-sm text-zinc-400">Qty: {item.quantity}</p>
+                  <p className="font-medium">{item?.title}</p>
+                  <p className="text-sm text-zinc-400">Qty: {item?.quantity}</p>
                 </div>
 
-                <p className="text-green-400 font-semibold">${item.price}</p>
+                <p className="text-green-400 font-semibold">${item?.price}</p>
               </div>
             ))}
           </div>
@@ -157,11 +126,11 @@ export default function ShoppingOrderDetailsView() {
           <h3 className="text-lg font-semibold mb-4">Shipping Address</h3>
 
           <div className="text-zinc-300 space-y-1">
-            <p>{orderDetails.addressInfo.address}</p>
-            <p>{orderDetails.addressInfo.city}</p>
-            <p>{orderDetails.addressInfo.pincode}</p>
-            <p>{orderDetails.addressInfo.phone}</p>
-            <p className="text-zinc-400">{orderDetails.addressInfo.notes}</p>
+            <p>{orderDetails?.addressInfo?.address}</p>
+            <p>{orderDetails?.addressInfo?.city}</p>
+            <p>{orderDetails?.addressInfo?.pincode}</p>
+            <p>{orderDetails?.addressInfo?.phone}</p>
+            <p className="text-zinc-400">{orderDetails?.addressInfo?.notes}</p>
           </div>
         </div>
       </div>

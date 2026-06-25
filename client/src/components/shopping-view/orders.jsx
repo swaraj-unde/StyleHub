@@ -12,18 +12,32 @@ import { Dialog, DialogTrigger } from "../ui/dialog";
 import ShoppingOrderDetailsView from "./order-details";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrders } from "@/store/shop/order-slice";
+import {
+  getAllOrders,
+  getOrderDetails,
+  resetOrderDetails,
+} from "@/store/shop/order-slice";
 
 export default function ShoppingOrders() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { orderList } = useSelector((state) => state.shopOrder);
+  const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
+
+  function handleFetchOrderDetails(orderId) {
+    dispatch(getOrderDetails(orderId));
+  }
 
   useEffect(() => {
     dispatch(getAllOrders(user.id));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (orderDetails !== null) {
+      setOpenDetailsDialog(true);
+    }
+  }, [orderDetails]);
 
   return (
     <Card className="bg-zinc-950 border-zinc-800 text-zinc-100 shadow-xl">
@@ -51,7 +65,7 @@ export default function ShoppingOrders() {
             <TableBody>
               {orderList && orderList.length > 0
                 ? orderList.map((item) => (
-                    <TableRow className="border-zinc-800 hover:bg-zinc-900/60 transition-colors">
+                    <TableRow key={item._id} className="border-zinc-800 hover:bg-zinc-900/60 transition-colors">
                       <TableCell className="font-medium text-white">
                         {item._id}
                       </TableCell>
@@ -71,19 +85,28 @@ export default function ShoppingOrders() {
                       </TableCell>
 
                       <TableCell className="text-right">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button className="bg-white text-black hover:bg-zinc-200 font-medium">
-                              View Details
-                            </Button>
-                          </DialogTrigger>
+                        <Dialog
+                          open={openDetailsDialog}
+                          onOpenChange={() => {
+                            setOpenDetailsDialog(false);
+                            dispatch(resetOrderDetails());
+                          }}
+                        >
+                          <Button
+                            onClick={() => {
+                              handleFetchOrderDetails(item._id);
+                            }}
+                            className="bg-white text-black hover:bg-zinc-200 font-medium"
+                          >
+                            View Details
+                          </Button>
 
-                          <ShoppingOrderDetailsView />
+                          <ShoppingOrderDetailsView orderDetails={orderDetails} />
                         </Dialog>
                       </TableCell>
                     </TableRow>
                   ))
-                : null }
+                : null}
             </TableBody>
           </Table>
         </div>
