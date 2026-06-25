@@ -2,9 +2,10 @@ import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
-
+import { useSelector } from "react-redux";
 
 export default function ShoppingOrderDetailsView({ orderDetails }) {
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <DialogContent
@@ -97,7 +98,7 @@ export default function ShoppingOrderDetailsView({ orderDetails }) {
 
             <div className="flex justify-between">
               <span className="text-zinc-400">Customer</span>
-              <Label>John Doe</Label>
+              <Label>{user?.username}</Label>
             </div>
           </div>
         </div>
