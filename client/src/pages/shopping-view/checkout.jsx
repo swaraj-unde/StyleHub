@@ -2,12 +2,20 @@ import img from "@/assets/account.jpg";
 import Address from "@/components/shopping-view/address";
 import { UserCartItems } from "@/components/shopping-view/cart-items-cnt";
 import { createNewOrder } from "@/store/shop/order-slice";
-import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
 export default function ShopCheckout() {
+  const dispatch = useDispatch();
+
   const { cartItems } = useSelector((state) => state.shopCart);
+  const { user } = useSelector((state) => state.auth);
+  const { isLoading, approvalURL } = useSelector((state) => state.shopOrder);
+
+  const [currSelAddress, setCurrSelAddress] = useState({});
+
   const totalAmount =
     cartItems?.items?.reduce(
       (acc, item) =>
@@ -16,21 +24,20 @@ export default function ShopCheckout() {
       0,
     ) || 0;
 
-  const { user } = useSelector((state) => state.auth);
-  const { approvalURL } = useSelector((state) => state.shopOrder);
-  const [currSelAddress, setCurrSelAddress] = useState({});
+  useEffect(() => {
+    if (approvalURL) {
+      window.location.href = approvalURL;
+    }
+  }, [approvalURL]);
 
-  const [isPaymentStart, setIsPaymentStart] = useState(false);
-
-  const dispatch = useDispatch();
   function handlePaypalPayment() {
-    if (currSelAddress === null || Object.keys(currSelAddress).length === 0) {
+    if (!currSelAddress || Object.keys(currSelAddress).length === 0) {
       toast.error("Please select a delivery address");
       return;
     }
 
-    if (cartItems.length === 0) {
-      toast.error("Cart is Empty");
+    if (!cartItems?.items?.length) {
+      toast.error("Your cart is empty");
       return;
     }
 
@@ -44,129 +51,155 @@ export default function ShopCheckout() {
         quantity: item.quantity,
       })),
       addressInfo: {
-        addressId: currSelAddress?._id,
-        address: currSelAddress?.address,
-        city: currSelAddress?.city,
-        pincode: currSelAddress?.pincode,
-        phone: currSelAddress?.phone,
-        notes: currSelAddress?.notes,
+        addressId: currSelAddress._id,
+        address: currSelAddress.address,
+        city: currSelAddress.city,
+        pincode: currSelAddress.pincode,
+        phone: currSelAddress.phone,
+        notes: currSelAddress.notes,
       },
-      totalAmount: totalAmount,
+      totalAmount,
       paymentMethod: "paypal",
       cartId: cartItems._id,
     };
 
-    dispatch(createNewOrder(orderData)).then((data) => {
-      if (data?.payload?.success) {
-        setIsPaymentStart(true);
-      } else {
-        setIsPaymentStart(false);
-      }
-    });
-  }
-
-  if (approvalURL) {
-    window.location.href = approvalURL;
+    dispatch(createNewOrder(orderData));
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="relative w-full overflow-hidden border-b border-zinc-800">
-        <img
-          src={img}
-          alt="Checkout Banner"
-          className="w-full h-[220px] md:h-[320px] object-cover brightness-40"
-        />
+    <>
+     
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="w-[90%] max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-8 text-center shadow-2xl">
+            <Loader2 className="mx-auto h-12 w-12 animate-spin text-violet-500" />
 
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white">
-              Checkout
-            </h1>
-            <p className="mt-2 text-zinc-300 text-sm md:text-lg">
-              Review your order and complete your purchase
+            <h2 className="mt-5 text-2xl font-bold text-white">
+              Creating Your Order
+            </h2>
+
+            <p className="mt-3 text-zinc-400">
+              Please wait while we securely connect to PayPal.
             </p>
+
+            <div className="mt-6 h-2 overflow-hidden rounded-full bg-zinc-800">
+              <div className="h-full w-full animate-pulse rounded-full bg-violet-500"></div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          <div className="xl:col-span-2">
-            <div className="mb-4">
-              <h2 className="text-3xl font-bold text-white">
-                Delivery Address
-              </h2>
-              <p className="text-zinc-400 mt-1">
-                Select or add a delivery address
+      <div className="min-h-screen bg-black text-white">
+
+        <div className="relative w-full overflow-hidden border-b border-zinc-800">
+          <img
+            src={img}
+            alt="Checkout Banner"
+            className="h-[220px] w-full object-cover brightness-40 md:h-[320px]"
+          />
+
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+                Checkout
+              </h1>
+
+              <p className="mt-2 text-sm text-zinc-300 md:text-lg">
+                Review your order and complete your purchase
               </p>
             </div>
-
-            <Address
-              setCurrSelAddress={setCurrSelAddress}
-              currSelAddress={currSelAddress}
-            />
           </div>
+        </div>
 
-          <div className="xl:col-span-1">
-            <div className="sticky top-6 rounded-2xl border border-zinc-800 bg-zinc-900 shadow-xl">
-              <div className="border-b border-zinc-800 p-6">
-                <h2 className="text-2xl font-bold text-white">Order Summary</h2>
+
+        <div className="mx-auto max-w-7xl px-4 py-8">
+          <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
+
+            <div className="xl:col-span-2">
+              <div className="mb-5">
+                <h2 className="text-3xl font-bold">Delivery Address</h2>
+
+                <p className="mt-1 text-zinc-400">
+                  Select or add a delivery address
+                </p>
               </div>
 
-              <div className="max-h-[500px] overflow-y-auto p-6 space-y-4">
-                {cartItems?.items?.length > 0 ? (
-                  cartItems.items.map((item) => (
-                    <div
-                      key={item.productId}
-                      className="rounded-lg border border-zinc-800 bg-zinc-950 p-3"
-                    >
-                      <UserCartItems cartItem={item} />
+              <Address
+                currSelAddress={currSelAddress}
+                setCurrSelAddress={setCurrSelAddress}
+              />
+            </div>
+
+
+            <div className="xl:col-span-1">
+              <div className="sticky top-6 rounded-2xl border border-zinc-800 bg-zinc-900 shadow-xl">
+                <div className="border-b border-zinc-800 p-6">
+                  <h2 className="text-2xl font-bold">Order Summary</h2>
+                </div>
+
+                <div className="max-h-[500px] space-y-4 overflow-y-auto p-6">
+                  {cartItems?.items?.length ? (
+                    cartItems.items.map((item) => (
+                      <div
+                        key={item.productId}
+                        className="rounded-lg border border-zinc-800 bg-zinc-950 p-3"
+                      >
+                        <UserCartItems cartItem={item} />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="rounded-lg border border-dashed border-zinc-700 p-8 text-center">
+                      <p className="text-zinc-500">Your cart is empty.</p>
                     </div>
-                  ))
-                ) : (
-                  <div className="rounded-lg border border-dashed border-zinc-700 p-8 text-center">
-                    <p className="text-zinc-500">Your cart is empty.</p>
+                  )}
+                </div>
+
+                {cartItems?.items?.length > 0 && (
+                  <div className="border-t border-zinc-800 p-6">
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-zinc-400">
+                        <span>Items</span>
+                        <span>{cartItems.items.length}</span>
+                      </div>
+
+                      <div className="flex justify-between text-zinc-400">
+                        <span>Subtotal</span>
+                        <span>₹{totalAmount.toLocaleString()}</span>
+                      </div>
+
+                      <div className="flex justify-between text-zinc-400">
+                        <span>Shipping</span>
+                        <span className="text-green-500">Free</span>
+                      </div>
+
+                      <div className="flex justify-between border-t border-zinc-800 pt-3 text-xl font-bold">
+                        <span>Total</span>
+
+                        <span>₹{totalAmount.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handlePaypalPayment}
+                      disabled={isLoading}
+                      className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-white py-3 font-semibold text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:bg-zinc-600 disabled:text-zinc-300"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Creating Order...
+                        </>
+                      ) : (
+                        "Place Order"
+                      )}
+                    </button>
                   </div>
                 )}
               </div>
-
-              {cartItems?.items?.length > 0 && (
-                <div className="border-t border-zinc-800 p-6">
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-zinc-400">
-                      <span>Items</span>
-                      <span>{cartItems.items.length}</span>
-                    </div>
-
-                    <div className="flex justify-between text-zinc-400">
-                      <span>Subtotal</span>
-                      <span>₹{totalAmount.toLocaleString()}</span>
-                    </div>
-
-                    <div className="flex justify-between text-zinc-400">
-                      <span>Shipping</span>
-                      <span className="text-green-500">Free</span>
-                    </div>
-
-                    <div className="border-t border-zinc-800 pt-3 flex justify-between text-xl font-bold text-white">
-                      <span>Total</span>
-                      <span>₹{totalAmount.toLocaleString()}</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={handlePaypalPayment}
-                    className="w-full mt-6 rounded-lg bg-white text-black py-3 font-semibold transition hover:bg-zinc-200"
-                  >
-                    Place Order
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
