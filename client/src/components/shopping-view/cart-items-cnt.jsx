@@ -33,8 +33,10 @@ export function UserCartItems({ cartItem }) {
         quantity: newQuantity,
       }),
     ).then((data) => {
-      if (data?.payload.success) {
+      if (data?.payload?.success) {
         toast.success(data.payload.message);
+      } else {
+        toast.error("Out Of Stock");
       }
     });
   }

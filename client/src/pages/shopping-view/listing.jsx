@@ -121,7 +121,7 @@ export default function ShopListing() {
         dispatch(fetchCartItems({ userId: user?.id }));
         toast.success(data.payload.message);
       } else {
-        toast.error("Failed to add product");
+        toast.error("Out Of Stock");
       }
     });
   }
