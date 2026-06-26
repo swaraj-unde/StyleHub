@@ -1,4 +1,4 @@
-import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import { HousePlug, LogOut, Menu, ShoppingCart, Store, UserCog } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
@@ -79,7 +79,7 @@ function HeaderRightContent() {
 
   return (
     <div className="flex items-center gap-3">
-      {/* Cart */}
+
       <Sheet open={openCart} onOpenChange={() => setOpenCart(false)}>
         <Button
           onClick={() => setOpenCart(true)}
@@ -152,10 +152,10 @@ export default function ShopHeader() {
       <div className="mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
         <Link to="/shop/home" className="flex items-center gap-3 text-white">
           <div className="rounded-lg bg-zinc-800 p-2">
-            <HousePlug className="h-5 w-5" />
+            <Store className="h-5 w-5" />
           </div>
 
-          <span className="text-lg font-bold tracking-tight">Ecommerce</span>
+          <span className="text-lg font-bold tracking-tight">Style Hub</span>
         </Link>
 
         <div className="hidden lg:flex items-center gap-10">

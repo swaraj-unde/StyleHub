@@ -6,7 +6,7 @@ import ShoppingOrders from "@/components/shopping-view/orders";
 function ShoppingAccount() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Banner */}
+
       <div className="relative h-[300px] w-full overflow-hidden border-b border-zinc-800">
         <img
           src={accImg}
@@ -22,11 +22,11 @@ function ShoppingAccount() {
         </div>
       </div>
 
-      {/* Content */}
+
       <div className="container mx-auto py-10 px-4">
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 shadow-xl">
           <Tabs defaultValue="orders" className="w-full">
-            {/* Tabs Header */}
+
             <div className="border-b border-zinc-800 p-4">
               <TabsList className="bg-zinc-800 p-1">
                 <TabsTrigger
@@ -55,12 +55,12 @@ function ShoppingAccount() {
               </TabsList>
             </div>
 
-            {/* Orders */}
+
             <TabsContent value="orders" className="p-6">
               <ShoppingOrders />
             </TabsContent>
 
-            {/* Address */}
+            
             <TabsContent value="address" className="p-6">
               <Address />
             </TabsContent>

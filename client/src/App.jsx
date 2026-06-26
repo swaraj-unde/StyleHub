@@ -4,7 +4,6 @@ import AuthLogin from "./pages/auth/login";
 import AuthRegister from "./pages/auth/register";
 import AdminLayout from "./components/admin-view/layout";
 import AdminDashboard from "./pages/admin-view/dashboard";
-import AdminFeatures from "./pages/admin-view/features";
 import AdminOrders from "./pages/admin-view/orders";
 import AdminProducts from "./pages/admin-view/products";
 import ShopLayout from "./components/shopping-view/layout";
@@ -64,7 +63,6 @@ function App() {
           }
         >
           <Route path="dashboard" element={<AdminDashboard />}></Route>
-          <Route path="features" element={<AdminFeatures />}></Route>
           <Route path="orders" element={<AdminOrders />}></Route>
           <Route path="products" element={<AdminProducts />}></Route>
         </Route>

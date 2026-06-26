@@ -9,15 +9,13 @@ function AdminLayout() {
 
   return (
     <div className="flex h-screen bg-zinc-950 text-white">
-      {/* Sidebar */}
+
       <AdminSidebar open={openSidebar} setOpen={setOpenSidebar} />
 
-      {/* Main section */}
+
       <div className="flex flex-col flex-1">
-        {/* Header */}
         <AdminHeader setOpen={setOpenSidebar} />
 
-        {/* Page content */}
         <main className="flex-1 overflow-y-auto p-4">
           <Outlet />
         </main>
