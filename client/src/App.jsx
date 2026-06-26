@@ -22,11 +22,12 @@ import { checkAuth } from "./store/auth-slice";
 import LoadingScreen from "./components/common/loading";
 import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
-
-
+import SearchPage from "./pages/shopping-view/search";
 
 function App() {
-  const { isAuthenticated, user ,isLoading } = useSelector((state) => state.auth);
+  const { isAuthenticated, user, isLoading } = useSelector(
+    (state) => state.auth,
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -77,8 +78,12 @@ function App() {
           <Route path="listing" element={<ShopListing />}></Route>
           <Route path="account" element={<ShopAccount />}></Route>
           <Route path="checkout" element={<ShopCheckout />}></Route>
-          <Route path="paypal-return" element={<PaypalReturnPage   />}></Route>
-          <Route path="payment-success" element={<PaymentSuccessPage   />}></Route>
+          <Route path="paypal-return" element={<PaypalReturnPage />}></Route>
+          <Route
+            path="payment-success"
+            element={<PaymentSuccessPage />}
+          ></Route>
+          <Route path="search" element={<SearchPage />}></Route>
         </Route>
         <Route path="/unauth-page" element={<UnAuthPage />}></Route>
         <Route path="*" element={<NotFound />}></Route>

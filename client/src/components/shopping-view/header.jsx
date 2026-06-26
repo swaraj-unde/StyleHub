@@ -23,7 +23,11 @@ function MenuItems() {
   const navigate = useNavigate();
 
   function handleNavigateToPage(menuItem) {
-    if (menuItem.id === "home" || menuItem.id === "products") {
+    if (
+      menuItem.id === "home" ||
+      menuItem.id === "products" ||
+      menuItem.id === "search"
+    ) {
       sessionStorage.removeItem("filters");
     } else {
       sessionStorage.setItem(

@@ -16,9 +16,12 @@ export function ProductDetailBox({ open, setOpen, product, handleAddToCart }) {
 
   const dispatch = useDispatch();
 
-  function handleDialogClose() {
-    setOpen(false);
-    dispatch(setProductDetails());
+  function handleDialogClose(isOpen) {
+    setOpen(isOpen);
+
+    if (!isOpen) {
+      dispatch(setProductDetails(null));
+    }
   }
 
   return (
