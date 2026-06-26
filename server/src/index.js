@@ -15,6 +15,7 @@ import shopAddressRouter from "./routes/shop/address.routes.js";
 import shopOrderRouter from "./routes/shop/order.routes.js";
 import adminOrderRouter from "./routes/admin/order.routes.js";
 import shopSearchRouter from "./routes/shop/search.routes.js";
+import shopReviewRouter from "./routes/shop/review.routes.js";
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -55,6 +56,8 @@ app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
+app.use("/api/shop/review", shopReviewRouter);
+
 
 app.get("/", (req, res) => {
   res.send("Backend is running");
