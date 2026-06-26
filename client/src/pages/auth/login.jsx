@@ -57,6 +57,15 @@ function AuthLogin() {
             Register
           </Link>
         </p>
+
+        <p className="mt-4 text-center text-xs text-zinc-500">
+          <span className="font-semibold">Admin Demo:</span>
+          <br />
+          Email:{" "}
+          <span className="font-mono text-zinc-300">test1@gmail.com</span>
+          <br />
+          Password: <span className="font-mono text-zinc-300">test1</span>
+        </p>
       </div>
     </div>
   );
