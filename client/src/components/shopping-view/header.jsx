@@ -85,9 +85,14 @@ function HeaderRightContent() {
           onClick={() => setOpenCart(true)}
           variant="ghost"
           size="icon"
-          className="h-10 w-10 rounded-full border border-zinc-800 bg-zinc-900 text-white hover:bg-zinc-800"
+          className="relative h-10 w-10 rounded-full border border-zinc-800 bg-zinc-900 text-white hover:bg-zinc-800"
         >
           <ShoppingCart className="h-5 w-5" />
+          {cartItems?.items?.length > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-zinc-900 animate-in fade-in zoom-in duration-200">
+              {cartItems.items.length}
+            </span>
+          )}
         </Button>
         <UserCartWrapper
           setOpenCart={setOpenCart}
